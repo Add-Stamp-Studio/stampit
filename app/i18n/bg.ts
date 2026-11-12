@@ -29,7 +29,8 @@ export const bg: Messages = {
     ftMadeBy: 'Създаден от',
     ftFollow: 'Последвайте',
     ftCopy: (year: number) => `© ${year} Add Stamp Studio · Лиценз MIT`,
-    ftLlap: 'Живейте дълго и благоденствайте.',
+    // Left in English on purpose: the pun does not survive translation.
+    ftLlap: 'Shoot or shootn’t.',
     ogImageAlt: 'StampIt: воден знак на цели папки, изцяло в браузъра'
   },
 
