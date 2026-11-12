@@ -78,7 +78,7 @@
     "build:licenses": "node scripts/build.mjs --licenses"
   },
   "devDependencies": {
-    "@types/node": "^26.6.4",
+    "@types/node": "^26.6.6",
     "typescript": "^7.0.2"
   }
 }
