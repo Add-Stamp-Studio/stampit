@@ -69,7 +69,12 @@ pub fn blend_over(base: &mut RgbaImage, overlay: &RgbaImage, x_offset: i32, y_of
         let base_row = &mut base_buffer[base_row_start..base_row_start + row_bytes];
         let overlay_row = &overlay_buffer[overlay_row_start..overlay_row_start + row_bytes];
 
-        for (base_pixel, overlay_pixel) in base_row.chunks_exact_mut(4).zip(overlay_row.chunks_exact(4)) {
+        for (base_pixel, overlay_pixel) in base_row
+            .as_chunks_mut::<4>()
+            .0
+            .iter_mut()
+            .zip(overlay_row.as_chunks::<4>().0)
+        {
             // A logo is mostly empty space, so this skips the majority of the area. It is
             // also exact: blending at alpha 0 already leaves the base byte for byte.
             if overlay_pixel[3] == 0 {

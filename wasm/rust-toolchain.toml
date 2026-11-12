@@ -2,6 +2,6 @@
 # Pinned so every developer and every CI runner builds the deployed .wasm with the same
 # rustc. The wasm-bindgen crate version must match the wasm-bindgen-cli that wasm-pack
 # runs; pinning the toolchain plus committing Cargo.lock keeps that pair reproducible.
-channel = "1.91.1"
+channel = "1.99.1"
 targets = ["wasm32-unknown-unknown"]
 components = ["rustfmt", "clippy"]
