@@ -47,7 +47,9 @@ jobs:
     needs: crate
     permissions:
       contents: read
-      # npm provenance, and trusted publishing when it is set up on npmjs.com.
+      # npm trusted publishing (OIDC) and provenance. There is no npm token: npmjs.com trusts
+      # this repository's .github/workflows/image-stamper.yml by name, so renaming this file
+      # stops publishing until the trusted publisher on npmjs.com is updated to match.
       id-token: write
     defaults:
       run:
@@ -95,8 +97,6 @@ jobs:
             echo "::notice::${name}@${version} is already on npm; nothing to publish"
             exit 0
           fi
+          # Authenticated by trusted publishing: npm exchanges the job's OIDC token for a
+          # short-lived publish token. Provenance comes with it; the flag only makes it explicit.
           npm publish --provenance --access public
-        env:
-          # Unused once trusted publishing is configured for this repository on npmjs.com;
-          # until then, an automation token in the repository secrets.
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

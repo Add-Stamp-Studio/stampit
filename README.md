@@ -185,8 +185,15 @@ the numbers, so the two cannot drift apart.
 ### Changing the Rust code
 
 The app consumes the engine as a published package, so a change in `wasm/` reaches it through
-a release of `@howbizarre/image-stamper`: build the package, bump its version, publish, then
-update the dependency here.
+a release of `@howbizarre/image-stamper`:
+
+1. In a pull request, bump the version in `packages/image-stamper/package.json` and its
+   lockfile (`npm version <x.y.z> --no-git-tag-version` there) and add the entry to its
+   [CHANGELOG.md](packages/image-stamper/CHANGELOG.md).
+2. After the merge, tag the merge commit `image-stamper-v<x.y.z>` and push the tag. The
+   `image-stamper` workflow builds, tests and publishes it with npm trusted publishing, so no
+   npm token is involved. A tag that does not match the package version fails the job.
+3. Once the version is on npm, update the dependency here.
 
 ```bash
 npm test                 # the Rust suite
