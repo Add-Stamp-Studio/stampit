@@ -1,7 +1,7 @@
 # Third-party licences
 
 `image_stamper_bg.wasm` is compiled from the `image-stamper` crate, version 2.2.0, together
-with the 34 Rust crates below. Each is used under the licence named in the fourth column,
+with the 33 Rust crates below. Each is used under the licence named in the fourth column,
 chosen from what the crate offers; the full text of that licence, as the crate ships it, follows in
 the notices section.
 
@@ -20,19 +20,18 @@ by hand. The embedded Ubuntu font is covered separately in [FONT-LICENSE.md](./F
 | byteorder-lite | 0.1.0 | Unlicense OR MIT | MIT | <https://github.com/image-rs/byteorder-lite> |
 | cfg-if | 1.0.5 | MIT OR Apache-2.0 | MIT | <https://github.com/rust-lang/cfg-if> |
 | console_error_panic_hook | 0.1.7 | Apache-2.0/MIT | MIT | <https://github.com/rustwasm/console_error_panic_hook> |
-| crc32fast | 1.5.2 | MIT OR Apache-2.0 | MIT | <https://github.com/srijs/rust-crc32fast> |
+| crc32fast | 1.5.5 | MIT OR Apache-2.0 | MIT | <https://github.com/srijs/rust-crc32fast> |
 | fast_image_resize | 6.1.0 | MIT OR Apache-2.0 | MIT | <https://github.com/cykooz/fast_image_resize> |
 | fdeflate | 0.3.7 | MIT OR Apache-2.0 | MIT | <https://github.com/image-rs/fdeflate> |
-| flate2 | 1.1.10 | MIT OR Apache-2.0 | MIT | <https://github.com/rust-lang/flate2-rs> |
+| flate2 | 1.1.11 | MIT OR Apache-2.0 | MIT | <https://github.com/rust-lang/flate2-rs> |
 | image | 0.25.10 | MIT OR Apache-2.0 | MIT | <https://github.com/image-rs/image> |
 | image-webp | 0.2.4 | MIT OR Apache-2.0 | MIT | <https://github.com/image-rs/image-webp> |
-| kamadak-exif | 0.6.1 | BSD-2-Clause | BSD-2-Clause | <https://github.com/kamadak/exif-rs> |
+| kamadak-exif | 0.6.2 | BSD-2-Clause | BSD-2-Clause | <https://github.com/kamadak/exif-rs> |
 | miniz_oxide | 0.8.9 | MIT OR Zlib OR Apache-2.0 | MIT | <https://github.com/Frommi/miniz_oxide/tree/master/miniz_oxide> |
 | miniz_oxide | 0.9.1 | MIT OR Zlib OR Apache-2.0 | MIT | <https://github.com/Frommi/miniz_oxide/tree/master/miniz_oxide> |
 | moxcms | 0.8.1 | BSD-3-Clause OR Apache-2.0 | Apache-2.0 | <https://github.com/awxkee/moxcms.git> |
 | mutate_once | 0.1.2 | BSD-2-Clause | BSD-2-Clause | <https://github.com/kamadak/mutate_once-rs> |
 | num-traits | 0.2.19 | MIT OR Apache-2.0 | MIT | <https://github.com/rust-num/num-traits> |
-| once_cell | 1.21.4 | MIT OR Apache-2.0 | MIT | <https://github.com/matklad/once_cell> |
 | owned_ttf_parser | 0.25.1 | Apache-2.0 | Apache-2.0 | <https://github.com/alexheretic/owned-ttf-parser> |
 | png | 0.18.1 | MIT OR Apache-2.0 | MIT | <https://github.com/image-rs/image-png> |
 | pxfm | 0.1.30 | BSD-3-Clause OR Apache-2.0 | Apache-2.0 | <https://github.com/awxkee/pxfm> |
@@ -40,9 +39,9 @@ by hand. The embedded Ubuntu font is covered separately in [FONT-LICENSE.md](./F
 | simd-adler32 | 0.3.10 | MIT | MIT | <https://github.com/mcountryman/simd-adler32> |
 | thiserror | 2.0.21 | MIT OR Apache-2.0 | MIT | <https://github.com/dtolnay/thiserror> |
 | ttf-parser | 0.25.1 | MIT OR Apache-2.0 | MIT | <https://github.com/harfbuzz/ttf-parser> |
-| unicode-ident | 1.0.26 | (MIT OR Apache-2.0) AND Unicode-3.0 | MIT AND Unicode-3.0 | <https://github.com/dtolnay/unicode-ident> |
-| wasm-bindgen | 0.2.129 | MIT OR Apache-2.0 | MIT | <https://github.com/wasm-bindgen/wasm-bindgen> |
-| wasm-bindgen-shared | 0.2.129 | MIT OR Apache-2.0 | MIT | <https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/shared> |
+| unicode-ident | 1.0.27 | (MIT OR Apache-2.0) AND Unicode-3.0 | MIT AND Unicode-3.0 | <https://github.com/dtolnay/unicode-ident> |
+| wasm-bindgen | 0.2.130 | MIT OR Apache-2.0 | MIT | <https://github.com/wasm-bindgen/wasm-bindgen> |
+| wasm-bindgen-shared | 0.2.130 | MIT OR Apache-2.0 | MIT | <https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/shared> |
 | zlib-rs | 0.6.8 | Zlib | Zlib | <https://github.com/trifectatechfoundation/zlib-rs> |
 | zune-core | 0.5.3 | MIT OR Apache-2.0 OR Zlib | MIT | <https://github.com/etemesi254/zune-image> |
 | zune-jpeg | 0.5.15 | MIT OR Apache-2.0 OR Zlib | MIT | <https://github.com/etemesi254/zune-image/tree/dev/crates/zune-jpeg> |
@@ -601,7 +600,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-### crc32fast 1.5.2
+### crc32fast 1.5.5
 
 Used under MIT (offered as `MIT OR Apache-2.0`). <https://github.com/srijs/rust-crc32fast>
 
@@ -695,7 +694,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-### flate2 1.1.10
+### flate2 1.1.11
 
 Used under MIT (offered as `MIT OR Apache-2.0`). <https://github.com/rust-lang/flate2-rs>
 
@@ -797,7 +796,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-### kamadak-exif 0.6.1
+### kamadak-exif 0.6.2
 
 Used under BSD-2-Clause (offered as `BSD-2-Clause`). <https://github.com/kamadak/exif-rs>
 
@@ -1146,38 +1145,6 @@ Used under MIT (offered as `MIT OR Apache-2.0`). <https://github.com/rust-num/nu
 ```text
 Copyright (c) 2014 The Rust Project Developers
 
-Permission is hereby granted, free of charge, to any
-person obtaining a copy of this software and associated
-documentation files (the "Software"), to deal in the
-Software without restriction, including without
-limitation the rights to use, copy, modify, merge,
-publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software
-is furnished to do so, subject to the following
-conditions:
-
-The above copyright notice and this permission notice
-shall be included in all copies or substantial portions
-of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
-ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
-TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
-SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
-IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
-```
-
-### once_cell 1.21.4
-
-Used under MIT (offered as `MIT OR Apache-2.0`). <https://github.com/matklad/once_cell>
-
-`LICENSE-MIT`:
-
-```text
 Permission is hereby granted, free of charge, to any
 person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the
@@ -1750,7 +1717,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-### unicode-ident 1.0.26
+### unicode-ident 1.0.27
 
 Used under MIT AND Unicode-3.0 (offered as `(MIT OR Apache-2.0) AND Unicode-3.0`). <https://github.com/dtolnay/unicode-ident>
 
@@ -1826,7 +1793,7 @@ dealings in these Data Files or Software without prior written
 authorization of the copyright holder.
 ```
 
-### wasm-bindgen 0.2.129
+### wasm-bindgen 0.2.130
 
 Used under MIT (offered as `MIT OR Apache-2.0`). <https://github.com/wasm-bindgen/wasm-bindgen>
 
@@ -1860,7 +1827,7 @@ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ```
 
-### wasm-bindgen-shared 0.2.129
+### wasm-bindgen-shared 0.2.130
 
 Used under MIT (offered as `MIT OR Apache-2.0`). <https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/shared>
 
