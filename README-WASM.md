@@ -199,10 +199,12 @@ The artifact is ~934 KiB (956 kB). Most of what keeps it there:
 - `opt-level = 3`. Measured on this crate, `"z"` and `"s"` both came out *larger* as well as
   slower — the size-oriented levels only pay off when there is a lot of code to shrink.
 
-The `wasm-opt` flag list in `Cargo.toml` is not optional. `wasm-pack` 0.13 through 0.15
-downloads Binaryen 117, which validates against an older default feature set than rustc 1.91
-emits; passing an explicit list replaces wasm-pack's defaults, so every feature the toolchain
-actually uses has to be named there or the build fails with "error validating input".
+The `wasm-opt` flag list in `Cargo.toml` is not optional. `wasm-opt` learns which features a
+module uses from its `target_features` section, and `strip = true` removes that section at
+link time, so every feature the toolchain emits has to be named in the list or the build fails
+with "error validating input". This is still the case with wasm-pack 0.15.1, which ships
+Binaryen 130, and rustc 1.99: without the list, the SIMD and bulk-memory instructions are
+rejected.
 
 ## Performance
 

@@ -818,7 +818,7 @@ fn exceeds_pixel_budget(width: u32, height: u32, max_megapixels: f32) -> bool {
 fn flatten_to_rgb(rgba: &[u8], matte: [u8; 3]) -> Vec<u8> {
     let mut rgb = Vec::with_capacity(rgba.len() / 4 * 3);
 
-    for pixel in rgba.chunks_exact(4) {
+    for pixel in rgba.as_chunks::<4>().0 {
         match pixel[3] {
             // Every pixel of a photograph, so this is the path that matters.
             u8::MAX => rgb.extend_from_slice(&pixel[0..3]),

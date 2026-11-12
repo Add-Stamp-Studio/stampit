@@ -3,7 +3,7 @@ name = "image-stamper"
 # Kept in sync with package.json so a deployed .wasm can be traced to a commit.
 version = "2.2.0"
 edition = "2024"
-rust-version = "1.91"
+rust-version = "1.99"
 
 [lib]
 # rlib is required so integration tests in tests/ can link against the crate.
@@ -22,11 +22,13 @@ ab_glyph = "0.2"
 kamadak-exif = "0.6"
 fast_image_resize = { version = "6.1", default-features = false, features = ["only_u8x4", "std"] }
 
-# The wasm-opt that wasm-pack 0.13 through 0.15 downloads is Binaryen 117, which validates
-# against an older default feature set than rustc 1.91 emits. Passing an explicit flag list
-# replaces wasm-pack's defaults, so every feature the toolchain actually uses has to be named
-# here or the build dies with "error validating input". simd128 comes from .cargo/config.toml;
-# the rest are what rustc emits for wasm32-unknown-unknown as standard.
+# wasm-opt learns which Wasm features a module uses from its `target_features` section, and
+# `strip = true` below removes that section at link time. So every feature the toolchain
+# emits has to be named here, or the build dies with "error validating input"; the list also
+# replaces wasm-pack's defaults. Still required with wasm-pack 0.15.1 (Binaryen 130) and
+# rustc 1.99: without it, wasm-opt rejects the SIMD and bulk-memory instructions. simd128
+# comes from .cargo/config.toml; the rest are what rustc emits for wasm32-unknown-unknown as
+# standard.
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = [
   '-O3',

@@ -120,7 +120,7 @@ fn main() {
     let jpeg = timed("encode JPEG q70", || {
         let mut rgb = Vec::with_capacity(IMG_WIDTH as usize * IMG_HEIGHT as usize * 3);
 
-        for pixel in photo.as_raw().chunks_exact(4) {
+        for pixel in photo.as_raw().as_chunks::<4>().0 {
             rgb.extend_from_slice(&pixel[0..3]);
         }
 

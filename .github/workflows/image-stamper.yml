@@ -23,7 +23,7 @@ env:
   # The release whose bindgen pairs with the wasm-bindgen in wasm/Cargo.lock; wasm-pack fetches
   # the matching wasm-bindgen-cli itself. The prebuilt binary, because `cargo install` would
   # compile it on every run.
-  WASM_PACK_VERSION: v0.15.0
+  WASM_PACK_VERSION: v0.15.1
 
 jobs:
   crate:
