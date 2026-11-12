@@ -40,7 +40,7 @@ and no account.
 ## Quick start
 
 ```bash
-git clone https://github.com/howbizarre/add-stamp.git
+git clone https://github.com/Add-Stamp-Studio/stampit.git
 cd add-stamp
 npm install
 npm run dev

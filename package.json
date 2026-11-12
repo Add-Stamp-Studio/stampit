@@ -21,13 +21,13 @@
     "batch-processing",
     "wrangler"
   ],
-  "homepage": "https://github.com/howbizarre/add-stamp#readme",
+  "homepage": "https://github.com/Add-Stamp-Studio/stampit#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/howbizarre/add-stamp.git"
+    "url": "https://github.com/Add-Stamp-Studio/stampit.git"
   },
   "bugs": {
-    "url": "https://github.com/howbizarre/add-stamp/issues"
+    "url": "https://github.com/Add-Stamp-Studio/stampit/issues"
   },
   "author": {
     "name": "howbizarre",
