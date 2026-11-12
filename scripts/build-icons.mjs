@@ -1,91 +1,103 @@
 /**
- * Renders the whole icon set and the share card from one vector source.
+ * Renders the icon set from one vector source, and the share cards from scripts/og-card.html.
  *
- * Run by hand — `node scripts/build-icons.mjs` — not from `npm run build`. The text is
- * rasterised through whatever font the machine has, so a CI box with a different font stack
- * would silently produce a different mark; the outputs are committed instead, and this file
- * is here so the next change starts from the same source rather than from a bitmap.
+ * Run by hand — `node scripts/build-icons.mjs` — not from `npm run build`; the outputs are
+ * committed, and this file is here so the next change starts from the same source rather
+ * than from a bitmap. Everything lands in public/, which Nuxt serves from the site root.
  *
- * Everything lands in public/, which Nuxt serves from the site root.
+ * The icons are the fox from the studio's status panel, on its yellow watercolor wash: pure
+ * vector, no text, so they come out the same on any machine.
+ *
+ * The share cards carry words, set in Prata and Manrope, which no build box has installed.
+ * So they are an HTML page that loads the fonts from Google, screenshotted by Chromium:
+ *
+ *   CHROME=/path/to/chrome node scripts/build-icons.mjs
+ *
+ * Without CHROME the icons are written and the cards are left as they are.
  */
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import sharp from 'sharp';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root, 'public');
 
-/** Straight from the Passepartout tokens in app/assets/css/main.css. */
-const CORAL = '#ee6f52';
-const AMBER = '#fbbf24';
-const PAPER = '#f2ebe0';
-const INK = '#232a31';
-const INK_2 = '#5b656f';
-const TEAL_SOFT = '#d2e7e5';
-const CORAL_SOFT = '#fbdbd0';
-const SAGE = '#b9c685';
+/** Straight from the tokens in app/assets/css/main.css. */
+const PAPER = '#fbf7ee';
+const SUN = '#fcbc1e';
+
+/** The site's watercolor edge filter (SiteDefs.vue, #wc). */
+const WATERCOLOR = `
+<filter id="wc" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+  <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="3" result="warp"/>
+  <feDisplacementMap in="SourceGraphic" in2="warp" scale="6" xChannelSelector="R" yChannelSelector="G" result="shape"/>
+  <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="17" result="blot"/>
+  <feColorMatrix in="blot" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.85 0 0 0 0.32" result="blotA"/>
+  <feComposite in="shape" in2="blotA" operator="in" result="wash"/>
+  <feMorphology in="shape" operator="erode" radius="1.4" result="inner"/>
+  <feComposite in="shape" in2="inner" operator="out" result="rim"/>
+  <feMerge><feMergeNode in="wash"/><feMergeNode in="rim"/></feMerge>
+</filter>`;
+
+/** The fox head (SiteDefs.vue, #foxHead), in its own 88 × 84 box starting at x = 2. */
+const FOX = `
+<g filter="url(#wc)">
+  <path d="M66 34 L72 4 L84 40 Z" fill="#c4561f"/>
+  <path d="M86 62 C 86 42 74 30 60 30 C 46 30 36 38 28 46 L8 58 C 5 60 6 63 9 64 L30 70 C 42 79 62 82 74 78 C 82 74 86 68 86 62 Z" fill="#e3702f"/>
+  <path d="M44 36 L40 6 L62 30 Z" fill="#e3702f"/>
+</g>
+<path d="M70 30 L72.5 13 L79 36 Z" fill="#4a2a20" opacity="0.55"/>
+<path d="M46.5 32 L43.5 15 L56 29 Z" fill="#4a2a20" opacity="0.55"/>
+<path d="M9 64 L30 70 C 42 79 58 81 70 78 C 58 72 42 68 26 63 C 20 61 14 62 9 64 Z" fill="#fff3e3"/>
+<ellipse cx="57" cy="62" rx="6.5" ry="3.8" fill="#ee6f52" opacity="0.45"/>
+<circle cx="8.6" cy="60" r="3.4" fill="#2b1d18"/>
+<ellipse cx="45" cy="48" rx="3.2" ry="3.8" fill="#2b1d18"/>
+<circle cx="44" cy="46.6" r="1.1" fill="#ffffff"/>`;
 
 /**
- * CSS `linear-gradient(145deg, …)` in SVG terms.
+ * The tile, drawn in the status panel's own 76 × 76 coordinates so the wash and the fox sit
+ * exactly as they do on the page.
  *
- * The line runs along (sin 145°, −cos 145°) = (0.574, 0.819) and, for a square, spans
- * (S·|sin| + S·|cos|) / 2 either side of the centre. Expressed in the bounding box it ends
- * at 57 % across, which leaves the bottom two thirds of the tile flat amber — hence the
- * explicit user-space endpoints.
- */
-const GRADIENT = `
-<linearGradient id="g" gradientUnits="userSpaceOnUse" x1="51" y1="-36" x2="461" y2="548">
-  <stop offset="0" stop-color="${CORAL}"/>
-  <stop offset="1" stop-color="${AMBER}"/>
-</linearGradient>`;
-
-/**
- * The badge from the masthead, as a standalone tile.
- *
- * Two settings, because the mark is read at two very different sizes. Above ~48 px the
- * masthead's own proportions apply. At and below it the letters need more of the tile and
- * the corners need less of it, or "AS" turns into a smudge in the tab strip — the same
- * reason a typeface ships an optical size.
- *
- * `radius: 0` is for the Apple touch icon: iOS masks it itself, and rounds twice otherwise.
+ * `radius` is in those units (17.5 ≈ the old 118 px at 512). Zero is for the Apple touch
+ * icon, which iOS rounds itself, and for the maskable one, which Android crops to a circle
+ * of 80 % — `scale` pulls the drawing into that safe zone.
  */
 const SETTINGS = {
-  large: { radius: 118, fontSize: 268, tracking: -8 },
-  small: { radius: 96, fontSize: 296, tracking: -14 },
-  square: { radius: 0, fontSize: 268, tracking: -8 },
-
-  // Android masks this one to a circle and may crop to the inner 80 %. The letters shrink
-  // to sit inside that safe zone; the gradient is what fills the corners that get cut.
-  maskable: { radius: 0, fontSize: 196, tracking: -6, baseline: 322 }
+  large: { radius: 17.5, scale: 1 },
+  small: { radius: 14, scale: 1.12 },
+  square: { radius: 0, scale: 1 },
+  maskable: { radius: 0, scale: 0.8 }
 };
 
-const badge = (size, setting = 'large') => {
-  const { radius, fontSize, tracking, baseline = 352 } = SETTINGS[setting];
+const tile = (size, setting = 'large') => {
+  const { radius, scale } = SETTINGS[setting];
 
   return `
-<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 512 512">
-  <defs>${GRADIENT}</defs>
-  <rect width="512" height="512" rx="${radius}" fill="url(#g)"/>
-  <text x="256" y="${baseline}" text-anchor="middle"
-        font-family="Segoe UI, Tahoma, Arial, sans-serif" font-size="${fontSize}" font-weight="700"
-        letter-spacing="${tracking}" fill="#ffffff">AS</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 76 76">
+  <defs>${WATERCOLOR}</defs>
+  <rect width="76" height="76" rx="${radius}" fill="${PAPER}"/>
+  <g transform="translate(38 39) scale(${scale}) translate(-38 -39)">
+    <circle cx="38" cy="40" r="32" fill="${SUN}" opacity="0.45" filter="url(#wc)"/>
+    <svg x="6" y="8" width="64" height="61" viewBox="2 0 88 84">${FOX}</svg>
+  </g>
 </svg>`;
 };
 
-/** ICO is a 6-byte header, one 16-byte entry per size, then the PNGs whole. */
+/** Packs PNGs into a .ico: a 6-byte header, a 16-byte directory row each, then the images. */
 const ico = (entries) => {
   const header = Buffer.alloc(6);
   header.writeUInt16LE(0, 0);
   header.writeUInt16LE(1, 2);
   header.writeUInt16LE(entries.length, 4);
 
-  let offset = 6 + entries.length * 16;
+  let offset = 6 + 16 * entries.length;
 
   const directory = entries.map(({ size, data }) => {
     const row = Buffer.alloc(16);
-    row.writeUInt8(size === 256 ? 0 : size, 0);
-    row.writeUInt8(size === 256 ? 0 : size, 1);
+    row.writeUInt8(size >= 256 ? 0 : size, 0);
+    row.writeUInt8(size >= 256 ? 0 : size, 1);
     row.writeUInt8(0, 2);
     row.writeUInt8(0, 3);
     row.writeUInt16LE(1, 4);
@@ -93,83 +105,61 @@ const ico = (entries) => {
     row.writeUInt32LE(data.length, 8);
     row.writeUInt32LE(offset, 12);
     offset += data.length;
-
     return row;
   });
 
   return Buffer.concat([header, ...directory, ...entries.map(entry => entry.data)]);
 };
 
-/**
- * The 1200x630 card that Slack, X, LinkedIn and Facebook unfurl.
- *
- * Deliberately the app's own surface — paper, the three blurred blobs, the badge, the
- * chips — rather than a screenshot: a screenshot of a tool with an empty dropzone says
- * nothing at thumbnail size, and goes stale on the next redesign.
- */
-const card = `
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="0.574" y2="0.819">
-      <stop offset="0" stop-color="${CORAL}"/>
-      <stop offset="1" stop-color="${AMBER}"/>
-    </linearGradient>
-    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="90"/>
-    </filter>
-  </defs>
-
-  <rect width="1200" height="630" fill="${PAPER}"/>
-
-  <g filter="url(#soft)" opacity="0.5">
-    <circle cx="80" cy="60" r="260" fill="${TEAL_SOFT}"/>
-    <circle cx="1140" cy="300" r="230" fill="${CORAL_SOFT}"/>
-    <circle cx="640" cy="700" r="250" fill="${SAGE}" opacity="0.45"/>
-  </g>
-
-  <rect x="72" y="86" width="104" height="104" rx="30" fill="url(#g)"/>
-  <text x="124" y="159" text-anchor="middle"
-        font-family="Segoe UI, Tahoma, Arial, sans-serif" font-size="54" font-weight="700"
-        letter-spacing="-2" fill="#ffffff">AS</text>
-
-  <text x="200" y="152" font-family="Segoe UI, Tahoma, Arial, sans-serif"
-        font-size="34" font-weight="600" letter-spacing="6" fill="${INK_2}">ADD STAMP</text>
-
-  <text x="72" y="330" font-family="Segoe UI, Tahoma, Arial, sans-serif"
-        font-size="82" font-weight="700" letter-spacing="-3" fill="${INK}">Batch watermarking,</text>
-  <text x="72" y="424" font-family="Segoe UI, Tahoma, Arial, sans-serif"
-        font-size="82" font-weight="700" letter-spacing="-3" fill="${INK}">entirely in your browser.</text>
-
-  <text x="72" y="494" font-family="Segoe UI, Tahoma, Arial, sans-serif"
-        font-size="34" font-weight="400" fill="${INK_2}">Put your mark on a whole folder of frames. Nothing leaves the tab.</text>
-
-  <g font-family="Consolas, Menlo, monospace" font-size="24" fill="${INK_2}">
-    <rect x="72" y="536" width="196" height="50" rx="25" fill="#fdfbf8" stroke="#e2d8c9"/>
-    <text x="170" y="568" text-anchor="middle">WebAssembly</text>
-    <rect x="284" y="536" width="150" height="50" rx="25" fill="#fdfbf8" stroke="#e2d8c9"/>
-    <text x="359" y="568" text-anchor="middle">no upload</text>
-    <rect x="450" y="536" width="176" height="50" rx="25" fill="#fdfbf8" stroke="#e2d8c9"/>
-    <text x="538" y="568" text-anchor="middle">free · MIT</text>
-  </g>
-</svg>`;
-
-const png = (svg, size) => sharp(Buffer.from(svg)).resize(size, size).png({ compressionLevel: 9 }).toBuffer();
+/** Rendered large and scaled down, so the watercolor noise averages out instead of aliasing. */
+const png = async (svg, size) =>
+  sharp(await sharp(Buffer.from(svg)).resize(1024, 1024).png().toBuffer())
+    .resize(size, size)
+    .png({ compressionLevel: 9 })
+    .toBuffer();
 
 mkdirSync(out, { recursive: true });
 
-// The tab strip: the tighter setting, and the mark still carries its own rounding there.
-const icoSizes = await Promise.all([16, 32, 48].map(async size => ({ size, data: await png(badge(size, 'small'), size) })));
+const icoSizes = await Promise.all([16, 32, 48].map(async size => ({ size, data: await png(tile(1024, 'small'), size) })));
 writeFileSync(join(out, 'favicon.ico'), ico(icoSizes));
 
-writeFileSync(join(out, 'apple-touch-icon.png'), await png(badge(180, 'square'), 180));
+writeFileSync(join(out, 'apple-touch-icon.png'), await png(tile(1024, 'square'), 180));
+writeFileSync(join(out, 'icon-192.png'), await png(tile(1024), 192));
+writeFileSync(join(out, 'icon-512.png'), await png(tile(1024), 512));
+writeFileSync(join(out, 'icon-maskable-512.png'), await png(tile(1024, 'maskable'), 512));
 
-writeFileSync(join(out, 'icon-192.png'), await png(badge(192), 192));
-writeFileSync(join(out, 'icon-512.png'), await png(badge(512), 512));
-writeFileSync(join(out, 'icon-maskable-512.png'), await png(badge(512, 'maskable'), 512));
+console.log('Wrote favicon.ico, apple-touch-icon.png, icon-192.png, icon-512.png, icon-maskable-512.png');
 
-writeFileSync(
-  join(out, 'og-image.png'),
-  await sharp(Buffer.from(card)).png({ compressionLevel: 9 }).toBuffer()
-);
+/**
+ * The share cards, one per language. og-card.html reads the language from its hash.
+ * --virtual-time-budget gives the web fonts time to arrive before the shot is taken.
+ */
+const chrome = process.env.CHROME;
 
-console.log('Wrote favicon.ico, apple-touch-icon.png, icon-192.png, icon-512.png, icon-maskable-512.png, og-image.png');
+if (!chrome) {
+  console.log('CHROME not set: share cards left as they are.');
+} else {
+  const card = pathToFileURL(join(root, 'scripts', 'og-card.html')).href;
+
+  for (const [lang, file] of [['en', 'og-image.jpg'], ['bg', 'og-image-bg.jpg']]) {
+    const shot = join(out, `${file}.png`);
+
+    execFileSync(chrome, [
+      '--headless',
+      '--no-sandbox',
+      '--disable-gpu',
+      '--hide-scrollbars',
+      '--allow-file-access-from-files',
+      '--virtual-time-budget=10000',
+      '--window-size=1200,630',
+      `--screenshot=${shot}`,
+      `${card}#${lang}`
+    ], { stdio: 'ignore' });
+
+    // JPEG, not PNG: the paper grain and the washes are noise a PNG cannot compress, and a
+    // megabyte share card is one some unfurlers give up on.
+    writeFileSync(join(out, file), await sharp(shot).jpeg({ quality: 86, mozjpeg: true }).toBuffer());
+    rmSync(shot);
+    console.log(`Wrote ${file}`);
+  }
+}

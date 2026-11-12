@@ -4,5 +4,21 @@
   "compatibility_date": "2025-07-18",
   "observability": { "enabled": true },
   "placement": { "mode": "smart" },
-  "keep_vars": true
+  "keep_vars": true,
+
+  // stampit.addstamp.studio is the site. stamp.bizarre.how is the old address: it stays
+  // attached so its DNS record and certificate stay up, and a Redirect Rule in the bizarre.how
+  // zone sends every request on it to the same path here with a 301. Deploy replaces the
+  // Worker's custom domains with exactly this list, so removing the old one here would take
+  // its DNS record down with it and leave the redirect nothing to answer on.
+  "routes": [
+    { "pattern": "stampit.addstamp.studio", "custom_domain": true },
+    { "pattern": "stamp.bizarre.how", "custom_domain": true }
+  ],
+
+  "assets": {
+    // Nitro writes /bg as bg/index.html. Served at /bg as canonical says, and /bg/ redirects to
+    // /bg (the default, auto-trailing-slash, would redirect /bg to /bg/ instead).
+    "html_handling": "drop-trailing-slash"
+  }
 }

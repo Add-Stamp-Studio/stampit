@@ -5,4 +5,4 @@ Allow: /
 # a 2 MB binary on every deploy is bandwidth neither side wants.
 Disallow: /wasm/
 
-Sitemap: https://stamp.bizarre.how/sitemap.xml
+Sitemap: https://stampit.addstamp.studio/sitemap.xml

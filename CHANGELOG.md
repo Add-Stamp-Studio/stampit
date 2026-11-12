@@ -4,6 +4,19 @@
 
 ### Added
 
+- **StampIt, in the Add Stamp Studio look, at stampit.addstamp.studio.** The site is redesigned
+  from the "StampIt Website" design canvas: Prata, Manrope and Caveat on cream paper, a coral
+  accent, wavy section edges, and watercolor illustrations with the studio's fox, all inline SVG
+  drawn from one shared kit (`SiteDefs.vue`). The home page gains a hero, a five-step "how it
+  works" trail, a night section on privacy, an open-source section that links Hortun, and a
+  closing call to action around the same stamping table; the guide is rebuilt to match, with the
+  live opacity demo kept. The name on the site is now StampIt, and the icons and share cards are
+  redrawn from the fox. The Worker serves on the custom domain `stampit.addstamp.studio`;
+  `stamp.bizarre.how` stays attached only to be redirected there.
+- **Bulgarian.** Both pages exist in Bulgarian at `/bg` and `/bg/how-to-use`, each prerendered
+  with its own `lang`, canonical, hreflang pair, JSON-LD and share card, and the sitemap lists all
+  four with their alternates. The words live in `app/i18n/`, Bulgarian typed by English, with
+  plurals and the decimal comma decided per language.
 - **The engine as an npm package.** [`packages/image-stamper`](packages/image-stamper) wraps the
   wasm-bindgen output in a typed API — `createImageStamper()`, `setStamp`, `stamp`, options as a
   plain object with CSS hex colours, a result that knows its MIME type — and is published as
@@ -87,6 +100,11 @@
 
 ### Removed
 
+- **Tailwind CSS and the Passepartout design.** The redesign is plain CSS in
+  `app/assets/css/main.css`, taken from the design canvas; `tailwindcss`, `@tailwindcss/vite`,
+  the default layout and the `ImageUploader`, `StampPicker`, `ImageGallery`, `OpacityPresets` and
+  `GuideStep` components went with the old look. The gallery now previews the first eight frames
+  and counts the rest, as the strip above it already did.
 - **`scripts/build-wasm.mjs`, `public/wasm/` and the `build:wasm`, `copy:wasm`, `clean:wasm`
   and `dev:wasm` scripts.** The engine is built by `packages/image-stamper` and consumed as a
   dependency.
@@ -94,6 +112,17 @@
   `saveStampedImagesToSpecificDirectory` had been unreachable since the save flow became a
   ZIP in 1.0.5 — the first only forwarded to the ZIP path, the second still carried the
   directory-picker code and the only `any` in the file. Nothing called either.
+
+### Fixed
+
+- **A false compile error from the dev server.** On startup Nuxt's warmup transformed the
+  engine's `.wasm`, which Vite 8 then compiled as an ES module and failed on
+  (`Failed to resolve import "./image_stamper_bg.js"`), in the terminal and in Nuxt's overlay,
+  although the browser loads the file as a plain asset and stamping worked. The warmup is off
+  (`vite.warmupEntry: false`), and the engine and JSZip are pre-bundled at startup
+  (`optimizeDeps.include`), so the first batch in dev no longer re-bundles them and reloads the
+  page. Vite's dependency cache moved from `node_modules/.cache/vite` to `.vite` in the project
+  root, ignored by git. Dev server only; the production build is unchanged.
 
 ### Changed
 

@@ -6,7 +6,6 @@
     "nuxt4",
     "vue3",
     "typescript",
-    "tailwindcss",
     "webassembly",
     "wasm",
     "rust",
@@ -52,10 +51,8 @@
   },
   "dependencies": {
     "@howbizarre/image-stamper": "^0.2.3",
-    "@tailwindcss/vite": "^4.3.5",
     "jszip": "^3.10.2",
     "nuxt": "^4.6.4",
-    "tailwindcss": "^4.3.5",
     "vue": "^3.5.45",
     "vue-router": "^5.5.0"
   },
