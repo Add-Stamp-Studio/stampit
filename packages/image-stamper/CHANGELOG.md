@@ -17,7 +17,9 @@ wrapper's API is unchanged.
   leaked. Reference types were already in the module, so the browsers it runs in are the same.
 - The raw bindings in `@howbizarre/image-stamper/wasm` accept `Uint8Array | number[]` for image
   and stamp bytes, as wasm-bindgen now types them. Code that passes a `Uint8Array` is unaffected.
-- The `.wasm` is 1 023 825 B, up from 1 018 360 B.
+- The published `.wasm` is 1 024 028 B, up from 1 018 576 B in 0.2.1. (The changelog shipped
+  in the 0.2.2 tarball gives 1 023 825 B, from a local build: the binary embeds the build
+  machine's paths to crate sources, so its size depends on where it was built.)
 - `THIRD-PARTY-LICENSES.md` lists 33 crates (was 34): `once_cell` left the dependency graph, and
   `kamadak-exif`, `flate2`, `crc32fast` and `unicode-ident` moved to newer patch releases.
 

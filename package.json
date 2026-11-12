@@ -51,7 +51,7 @@
     "test:package": "npm --prefix packages/image-stamper test"
   },
   "dependencies": {
-    "@howbizarre/image-stamper": "^0.2.1",
+    "@howbizarre/image-stamper": "^0.2.2",
     "@tailwindcss/vite": "^4.3.5",
     "jszip": "^3.10.2",
     "nuxt": "^4.6.4",
