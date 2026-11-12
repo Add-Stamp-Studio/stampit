@@ -64,5 +64,9 @@
     "nitropack": "^2.13.6",
     "sharp": "^0.35.5",
     "wrangler": "^4.160.1"
+  },
+  "allowScripts": {
+    "esbuild": false,
+    "workerd": false
   }
 }
