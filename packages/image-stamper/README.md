@@ -402,13 +402,13 @@ encoder only sees their pixels. On the machine `render` was measured on, `stamp(
 24 MP frame took about 0.85 s, a 960 px and a 400 px stamped variant of it about 0.3 s, and
 a 1920 px and a 400 px unstamped one about 0.37 s, most of it decoding. The binary is compiled with 128-bit SIMD, which every browser since Chrome 91,
 Firefox 89 and Safari 16.4 supports. See the repository's
-[docs/PERFORMANCE.md](https://github.com/howbizarre/add-stamp/blob/master/docs/PERFORMANCE.md)
+[docs/PERFORMANCE.md](https://github.com/Add-Stamp-Studio/stampit/blob/master/docs/PERFORMANCE.md)
 for the measurements.
 
 ## Versioning
 
 The package version follows this wrapper's API. The WebAssembly inside is built from the
-`image-stamper` Rust crate in the [add-stamp](https://github.com/howbizarre/add-stamp)
+`image-stamper` Rust crate in the [stampit](https://github.com/Add-Stamp-Studio/stampit)
 repository; the crate version each release was built from is recorded in
 [CHANGELOG.md](./CHANGELOG.md).
 

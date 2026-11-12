@@ -2,7 +2,17 @@
 
 All notable changes to the `@howbizarre/image-stamper` npm package. The Rust crate it is built from has
 its own history in the repository's top-level
-[CHANGELOG.md](https://github.com/howbizarre/add-stamp/blob/master/CHANGELOG.md).
+[CHANGELOG.md](https://github.com/Add-Stamp-Studio/stampit/blob/master/CHANGELOG.md).
+
+## [0.2.1] - 2026-11-12
+
+Built from crate `image-stamper` 2.2.0, like 0.2.0; the code and the binary are unchanged.
+
+### Changed
+
+- The repository moved to [Add-Stamp-Studio/stampit](https://github.com/Add-Stamp-Studio/stampit)
+  (it was `howbizarre/add-stamp`): the package's `repository`, `homepage` and `bugs` point
+  there, and so do the links in this README. The old addresses redirect.
 
 ## [0.2.0] - 2026-10-11
 
