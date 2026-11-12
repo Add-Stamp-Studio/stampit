@@ -10,7 +10,7 @@ rust-version = "1.91"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-wasm-bindgen = "0.2.129"
+wasm-bindgen = "0.2.130"
 # default-features = false only takes effect now that imageproc is gone: imageproc depended
 # on image with default features, and Cargo unions features across the whole graph, so an
 # AV1 encoder, OpenEXR, TIFF, GIF and QOI were compiled into the wasm binary regardless.
