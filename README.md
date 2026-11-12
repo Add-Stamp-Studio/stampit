@@ -1,10 +1,11 @@
-# Add Stamp
+# StampIt
 
-![Add Stamp, after a batch of six frames has been stamped](./app/assets/img/screenshot.png)
+![StampIt's stamping table in the dark theme, after a batch of frames has been stamped](./app/assets/img/screenshot.png)
 
-Batch watermarking in the browser. Drop in a folder of frames and a PNG mark, and every photo
-comes back stamped, captioned with its filename, and zipped — without a single byte leaving
-the machine.
+Batch watermarking in the browser, by [Add Stamp Studio](https://addstamp.studio), at
+**[stampit.addstamp.studio](https://stampit.addstamp.studio)**. Drop in a folder of frames and a
+PNG mark, and every photo comes back stamped, captioned with its filename, and zipped — without
+a single byte leaving the machine.
 
 The pipeline is a Rust crate compiled to WebAssembly, so decoding, compositing and re-encoding
 all happen on the user's own hardware at close to native speed. There is no server, no upload
@@ -28,12 +29,13 @@ and no account.
 - ⚡ Runs the whole pipeline in Rust/WebAssembly — no upload, no server, no account
 - 📦 Writes the batch into a folder you pick, or hands back one ZIP — the ZIP works everywhere
 - 🌗 Light and dark themes, following the OS until you pick one
+- 🌍 In English and Bulgarian, each language its own prerendered page
 - 🛡️ Refuses oversized images from their header, so one bad file cannot take down the batch
 
 <details>
 <summary>The same screen in the light theme</summary>
 
-![Add Stamp in its light theme](./app/assets/img/screenshot-light.png)
+![StampIt's stamping table in the light theme](./app/assets/img/screenshot-light.png)
 
 </details>
 
@@ -230,19 +232,42 @@ them, and no component knows which theme it is in. Dark mode is class-based — 
 The class is set by an inline script in [`nuxt.config.ts`](nuxt.config.ts) before first paint.
 The pages are prerendered as light-theme HTML — a build machine cannot know what the visitor
 prefers — so without it the app would flash the light palette on every load for anyone on a
-dark OS. For the same reason the theme toggle picks its icon with the `dark:` variant rather
-than from state, which would bake one answer into the static HTML and contradict it on
-hydration. The app follows the OS, including when
+dark OS. For the same reason the theme toggle picks its icon and label with the `.dark-only` /
+`.light-only` classes rather than from state, which would bake one answer into the static HTML
+and contradict it on hydration. The app follows the OS, including when
 the OS switches while the tab is open, until someone actually presses the toggle; that choice
 is then stored per browser under `add-stamp:theme`.
 
 Frames themselves always sit on a hue-free grey mount rather than on the warm page colour,
 so the surround cannot shift how their white balance reads.
 
+The look — Prata, Manrope and Caveat, the paper, the watercolor illustrations and the fox —
+is the Add Stamp Studio visual language. The illustrations are inline SVG drawn from one shared
+kit of filters and symbols in [`SiteDefs.vue`](app/components/SiteDefs.vue), so they follow the
+theme and cost no image requests.
+
+## Languages
+
+English lives at `/` and `/how-to-use`, Bulgarian at `/bg` and `/bg/how-to-use`. Each is its own
+prerendered page with its own `lang`, canonical, hreflang pair and share card, and the sitemap
+lists all four with their alternates. The language is read from the path alone
+([`useLocale`](app/composables/useLocale.ts)), so a page cannot disagree with its URL; the
+switcher in the header is a pair of links, not a runtime toggle.
+
+The words are in [`app/i18n/en.ts`](app/i18n/en.ts) and [`app/i18n/bg.ts`](app/i18n/bg.ts). The
+Bulgarian file is typed by the English one, so a key added to one and forgotten in the other
+fails the type check. Strings that carry a number are functions, which is where plurals and the
+Bulgarian decimal comma are decided.
+
 ## Deployment
 
 The app deploys to Cloudflare Workers, using the `cloudflare_module` Nitro preset and the
-config in [`wrangler.jsonc`](wrangler.jsonc).
+config in [`wrangler.jsonc`](wrangler.jsonc). It serves on the custom domain
+`stampit.addstamp.studio`. The old address, `stamp.bizarre.how`, stays attached to the Worker so
+its DNS record and certificate stay up, and a Redirect Rule in the `bizarre.how` zone sends it
+on with a 301, path and query intact. Deploy replaces the Worker's custom domains with exactly
+the list in `wrangler.jsonc`, so the old one has to stay listed for as long as the redirect
+should answer.
 
 ```bash
 npm run deploy
@@ -333,20 +358,33 @@ nothing beyond a Blob, so every supported browser can take the batch that way.
 add-stamp/
 ├── app/
 │   ├── assets/
-│   │   ├── css/main.css          # design tokens, both themes, component classes
+│   │   ├── css/main.css          # design tokens, both themes, every class the pages use
 │   │   ├── fonts/Ubuntu-M.ttf    # the full face, kept as the source for subsetting
+│   │   ├── logos/                # the StampIt and Add Stamp Studio wordmarks, light and dark
 │   │   └── img/                  # README screenshots
 │   ├── components/
-│   │   ├── AppHeader.vue         # title, wasm version / output / limit chips, theme toggle
-│   │   ├── ImageUploader.vue     # frame picker, filmstrip, filename switch
-│   │   ├── StampPicker.vue       # PNG picker, checkerboard preview, validation
-│   │   ├── OpacityPresets.vue    # opacity swatches plus slider
-│   │   └── ImageGallery.vue      # the results, on a hue-free mount
+│   │   ├── HomePage.vue          # the home page: hero, how it works, night, open source
+│   │   ├── GuidePage.vue         # the guide: five steps, FAQ, the defaults
+│   │   ├── AppHeader.vue         # wordmark, section links, language, theme, call to action
+│   │   ├── AppFooter.vue
+│   │   ├── SiteDefs.vue          # the watercolor kit: filters, the fox, the stand-in photos
+│   │   ├── NightScene.vue        # the night sky and hills behind two sections
+│   │   ├── OpacityControl.vue    # opacity swatches plus slider, in the studio and the guide
+│   │   ├── home/
+│   │   │   ├── StampingTable.vue # state for a run, the status panel, both save paths
+│   │   │   ├── FramesPanel.vue   # frame picker, filmstrip, filename switch
+│   │   │   ├── StampPanel.vue    # PNG picker, checkerboard preview, validation
+│   │   │   ├── StampGallery.vue  # the first frames, before and after
+│   │   │   └── …Art.vue          # the illustrations
+│   │   └── guide/                # the guide's hero illustration
 │   ├── composables/
 │   │   ├── useImageStamping.ts   # the WASM boundary: options, batching, output
+│   │   ├── useLocale.ts          # the language from the path, and the words for it
+│   │   ├── usePageSeo.ts         # title, canonical, hreflang, share card
 │   │   └── useTheme.ts           # light/dark, stored per browser
-│   ├── utils/formatFileSize.ts
-│   └── app.vue                   # state for a run, and the status panel
+│   ├── i18n/                     # en.ts and bg.ts
+│   ├── pages/                    # index, how-to-use, and the same two under bg/
+│   └── utils/formatFileSize.ts
 ├── wasm/                         # the Rust crate — see README-WASM.md
 │   ├── src/
 │   │   ├── lib.rs                # options, the pipeline, encoding, size limits
@@ -360,14 +398,14 @@ add-stamp/
 │   └── examples/bench.rs         # timings for the hot path
 ├── packages/image-stamper/       # the engine as an npm package: typed wrapper, tests, licences
 ├── docs/PERFORMANCE.md           # where the time goes, and what could be done about it
-├── scripts/build-icons.mjs       # renders the icon set and the share card
+├── scripts/build-icons.mjs       # renders the icon set, and the share cards from og-card.html
 ├── nuxt.config.ts                # prerender, head defaults, theme boot
 └── wrangler.jsonc                # Cloudflare Worker config
 ```
 
 ## Technology stack
 
-- **Frontend**: Nuxt 4 (prerendered, then client-side), Vue 3, TypeScript, Tailwind CSS 4
+- **Frontend**: Nuxt 4 (prerendered, then client-side), Vue 3, TypeScript, plain CSS
 - **Image processing**: Rust compiled to WebAssembly, with `simd128`, and no `unsafe` in the
   crate, consumed as the npm package `@howbizarre/image-stamper`; photos are resized with
   `fast_image_resize`, whose SIMD kernels are the one place intrinsics come in
