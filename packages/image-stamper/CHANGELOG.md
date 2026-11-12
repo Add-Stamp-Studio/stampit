@@ -4,6 +4,19 @@ All notable changes to the `@howbizarre/image-stamper` npm package. The Rust cra
 its own history in the repository's top-level
 [CHANGELOG.md](https://github.com/Add-Stamp-Studio/stampit/blob/master/CHANGELOG.md).
 
+## [0.2.3] - 2026-11-12
+
+Built from crate `image-stamper` 2.2.0, like 0.2.2, now compiled with Rust 1.99.1 (was 1.91.1)
+and wasm-pack 0.15.1, whose `wasm-opt` is Binaryen 130 (was 117). The wrapper's API and the
+generated glue are unchanged; only the `.wasm` differs.
+
+### Changed
+
+- The `.wasm` is about 41 KB (4%) smaller than 0.2.2's.
+- The loops that composite the stamp and flatten RGBA to RGB walk fixed four-byte chunks
+  (`as_chunks::<4>()`) instead of `chunks_exact(4)`, as clippy 1.99 asks. Both visit the same
+  pixels, since every buffer is a whole number of them.
+
 ## [0.2.2] - 2026-11-12
 
 Built from crate `image-stamper` 2.2.0, like 0.2.1, with its Rust dependencies updated; this
