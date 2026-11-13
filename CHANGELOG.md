@@ -59,6 +59,9 @@
 
 ### Changed
 
+- **`LICENSE.md` holds the MIT text alone.** Its third-party section kept GitHub from
+  recognising the licence, so the repository showed "Other" instead of MIT. The section moved
+  to `THIRD-PARTY-NOTICES.md`, and the line on contributions to the README.
 - **Photos are resized with `fast_image_resize`.** Lanczos3 with WebAssembly SIMD128 kernels,
   for `render`'s variants; the stamp is still scaled by `image`, once per size. Measured in the
   wasm artifact on a 24 MP frame, a 1920 px and a 400 px output took 368 ms against 875 ms with

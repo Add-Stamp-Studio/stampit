@@ -426,11 +426,15 @@ add-stamp/
    crate version in its CHANGELOG
 6. Commit, push, and open a pull request
 
+By contributing, you agree that your contributions are licensed under the MIT License.
+
 ## License
 
 MIT — see [LICENSE.md](LICENSE.md).
 
 ### Third-party components
+
+The full list, with each licence, is in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 - **Ubuntu font**: under the Ubuntu Font Licence, separately from this project's MIT licence —
   see [wasm/src/FONT-LICENSE.md](wasm/src/FONT-LICENSE.md)
